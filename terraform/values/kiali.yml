@@ -1,0 +1,38 @@
+# We set up anonymous authentication as this is for demos.
+auth:
+  strategy: anonymous
+
+deployment:
+  image_name: quay.io/kiali/kiali
+  image_version: v2.11
+  pod_labels:
+    sidecar.istio.io/inject: "false"
+  ingress_enabled: false
+  image_pull_policy: IfNotPresent
+  logger:
+    log_format: "text"
+    time_field_format: "2006-01-02T15:04:05Z07:00"
+    sampler_rate: 1
+  resources:
+    requests:
+      cpu: "10m"
+      memory: "64Mi"
+    limits:
+      memory: "1Gi"
+
+login_token:
+  signing_key: CHANGEME00000000
+external_services:
+  # Kiali will not start up without tracing service. We don't want to require it.
+  tracing:
+    enabled: false
+
+kiali_feature_flags:
+  disabled_features: []
+
+server:
+  port: 20001
+  observability:
+    metrics:
+      enabled: true
+      port: "9090"

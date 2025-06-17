@@ -1,0 +1,62 @@
+allInOne:
+  enable: true
+  replicas: 2
+  image:
+    repository: jaegertracing/all-in-one
+    tag: 1.70.0
+    pullPolicy: IfNotPresent
+  podLabels:
+    app: jaeger
+  extraEnv:
+  - name: BADGER_EPHEMERAL
+    value: "false"
+  - name: BADGER_DIRECTORY_VALUE
+    value: "/badger/data"
+  - name: BADGER_DIRECTORY_KEY
+    value: "/badger/key"
+  - name: MEMORY_MAX_TRACES
+    value: "50000"
+  - name: QUERY_BASE_PATH
+    value: /jaeger
+  extraSecretMounts:
+  - name: badger-secret
+    mountPath: /badger
+    subPath: data
+    readOnly: true
+    secretName: my-secret
+  service:
+    headless: true
+    collector:
+      otlp:
+        http:
+          name: http-otel
+        grpc:
+          name: grpc-otel
+
+collector:
+  enabled: false
+
+query:
+  enabled: false
+
+agent:
+  enabled: false
+
+ingester:
+  enabled: false
+
+storage:
+  type: badger
+  options:
+    badger:
+      ephemeral: false
+      directory_key: /badger/key
+      directory_value: /badger/data
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi

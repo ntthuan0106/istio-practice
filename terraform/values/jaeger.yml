@@ -24,39 +24,37 @@ allInOne:
     subPath: data
     readOnly: true
     secretName: my-secret
-  service:
-    headless: true
-    collector:
-      otlp:
-        http:
-          name: http-otel
-        grpc:
-          name: grpc-otel
+  # service:
+  #   headless: true
+  #   collector:
+  #     otlp:
+  #       http:
+  #         name: otlp-grpc
+  #       grpc:
+  #         name: otlp-http
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
 
-collector:
-  enabled: false
+# collector:
+#   enabled: false
 
-query:
-  enabled: false
+# query:
+#   enabled: false
 
 agent:
   enabled: false
 
-ingester:
-  enabled: false
+# ingester:
+#   enabled: false
 
 storage:
   type: badger
-  options:
-    badger:
-      ephemeral: false
-      directory_key: /badger/key
-      directory_value: /badger/data
-
-resources:
-  limits:
-    cpu: 500m
-    memory: 512Mi
-  requests:
-    cpu: 250m
-    memory: 256Mi
+  badger:
+    ephemeral: false
+    directory_key: /badger/key
+    directory_value: /badger/data

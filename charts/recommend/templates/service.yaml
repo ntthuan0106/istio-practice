@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "recommend.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "recommend.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
+      name: grpc
+  selector:
+    {{- include "recommend.selectorLabels" . | nindent 4 }}

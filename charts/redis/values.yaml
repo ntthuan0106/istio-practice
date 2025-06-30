@@ -1,0 +1,89 @@
+# Default values for redis.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+replicaCount: 1
+
+# This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
+image:
+  repository: redis:alpine
+  # This sets the pull policy for images.
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+# This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+imagePullSecrets: []
+# This is to override the chart name.
+nameOverride: ""
+fullnameOverride: "redis-cart"
+
+# This is for setting Kubernetes Annotations to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+podAnnotations: {}
+# This is for setting Kubernetes Labels to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: {}
+
+podSecurityContext:
+  fsGroup: 1000
+  runAsGroup: 1000
+  runAsNonRoot: true
+  runAsUser: 1000
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+  privileged: false
+  readOnlyRootFilesystem: true
+# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
+service:
+  # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  type: ClusterIP
+  # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
+  port: 6379
+
+resources:
+  limits:
+    memory: 256Mi
+    cpu: 125m
+  requests:
+    cpu: 70m
+    memory: 200Mi
+
+# This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+readinessProbe:
+  periodSeconds: 5
+  tcpSocket:
+    port: 6379
+livenessProbe:
+  periodSeconds: 5
+  tcpSocket:
+    port: 6379
+
+# This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+  # Additional volumes on the output Deployment definition.
+volumes:
+- name: redis-data
+  emptyDir: {}
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts:
+- mountPath: /data
+  name: redis-data
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
